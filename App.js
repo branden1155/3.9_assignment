@@ -1,20 +1,36 @@
+import React, {useState} from'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, Switch, StyleSheet, Text, Button } from 'react-native';
+import Heading from './components/Heading';
+import  { NavigationContainer } from '@react-navigation/native';
+import  { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function App() {
+import Movie from './Movie';
+import Form from './Form';
+import MovieList from './MovieList';
+
+function HomeScreen({navigation}){
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <SafeAreaView>
+      <Button title='Go To Movie List' onPress={() => navigation.navigate('MovieList')} />
+      <Button title='Go To Form' onPress={() => navigation.navigate('Form')} />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const Stack = createNativeStackNavigator();
+  
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="MovieList" component={MovieList} />
+        <Stack.Screen name="Form" component={Form} />
+        <Stack.Screen name="Movie" component={Movie} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  )}
