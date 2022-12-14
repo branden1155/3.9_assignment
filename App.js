@@ -1,22 +1,31 @@
 import React, {useState} from'react';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, Switch, StyleSheet, Text, Button } from 'react-native';
-import Heading from './components/Heading';
-import  { NavigationContainer } from '@react-navigation/native';
-import  { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Switch, Text, Button, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import styles from './appStyles'
 
-import Movie from './Movie';
-import Form from './Form';
-import MovieList from './MovieList';
+import Movie from './Movie/Movie';
+import Form from './Form/Form';
+import MovieList from './MovieList/MovieList';
 
 function HomeScreen({navigation}){
 
   return (
-    <SafeAreaView>
-      <Button title='Go To Movie List' onPress={() => navigation.navigate('MovieList')} />
-      <Button title='Go To Form' onPress={() => navigation.navigate('Form')} />
+    <View style={[styles.containers]}>
+      <View style={[styles.pageTitle]}>
+        <Text h1 style={[styles.text, {color:"#ffffff"}]}>Your Movie List</Text>
+      </View>
+      <View style={[styles.buttonContainer]}>
+        <View style={[styles.navButtons]}>
+          <Button color="#e76f51" title='Go To Movie List' onPress={() => navigation.navigate('MovieList')} />
+        </View>
+        <View style={[styles.navButtons]}>
+          <Button color="#e76f51" title='Go To Form' onPress={() => navigation.navigate('Form')} />
+        </View>
+      </View>
       <StatusBar style="auto" />
-    </SafeAreaView>
+    </View>
   );
 }
 
