@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from'react';
-import { StyleSheet, FlatList, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, FlatList, View, Button, Text, RefreshControl } from 'react-native';
 import  { useNavigation } from '@react-navigation/native';
+import styles from './listContainerStyles'
 
 
 export default function ListContainer({data}) {
@@ -14,15 +15,22 @@ export default function ListContainer({data}) {
   const API_URL = 'https://crudappbranden.herokuapp.com/api/v1/list'
 
   let ignore = false;
+
   useEffect(() => {
     if(!ignore){
       getMovies();
     }
+    const reload = navigation.addListener('focus', () => {
+      console.log('reloaded!');
+      getMovies();
+    });
 
     return () => {
       ignore = true;
+      reload();
     }
-  }, [])
+    
+  }, [navigation]);
 
   const getMovies = async () => {
 
@@ -41,24 +49,19 @@ export default function ListContainer({data}) {
   }
 
   return (
-    <FlatList
-        data={movies}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('Movie', {id: item._id})}>
-            <Text>{item.movieName}</Text>
-          </TouchableOpacity>
-        )}
-        keyExtractor={item => item._id}
+    <View style={[styles.container]}>
+      <FlatList
+          style={[styles.movieListContainer]}
+          data={movies}
+          renderItem={({ item }) => (
+            <View style={[styles.movieButtons]}>
+              <View style={[styles.movieButtonitem]}><Button color= "#e76f51" title={item.movieName} onPress={() => navigation.navigate('Movie', {id: item._id})} /></View>
+            </View>
+            
+          )}
+          keyExtractor={item => item._id}
       />
+    </View>
 
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
