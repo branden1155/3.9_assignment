@@ -3,6 +3,10 @@ import { StyleSheet, FlatList, View, Button, Text, RefreshControl } from 'react-
 import  { useNavigation } from '@react-navigation/native';
 import styles from './listContainerStyles'
 
+import AuthService from '../services/auth.service'
+import ListService from '../services/list.service'
+
+
 
 export default function ListContainer({data}) {
 
@@ -15,38 +19,49 @@ export default function ListContainer({data}) {
   const API_URL = 'https://crudappbranden.herokuapp.com/api/v1/list'
 
   let ignore = false;
-
   useEffect(() => {
-    if(!ignore){
-      getMovies();
-    }
-    const reload = navigation.addListener('focus', () => {
-      console.log('reloaded!');
-      getMovies();
-    });
+    ListService.getAllPrivateMovies().then(
+      response => {
+        setMovies(response.data);
+      },
+      (error) => {
+        console.log("Secured Page Error:", error.response)
+        if(error,response && response.status === 403) {
+          AuthService.logout();
+          navigation.navigate('Login');
+        }
+      }
+    )
+    // if(!ignore){
+    //   getMovies();
+    // }
+    // const reload = navigation.addListener('focus', () => {
+    //   console.log('reloaded!');
+    //   getMovies();
+    // });
 
-    return () => {
-      ignore = true;
-      reload();
-    }
+    // return () => {
+    //   ignore = true;
+    //   reload();
+    // }
     
   }, [navigation]);
 
   const getMovies = async () => {
 
-    setLoading(true);
-    try {
-      await fetch(`${API_URL}`)
-        .then(res => res.json())
-        .then(data => {
-          setMovies(data)
-        })
-    } catch (error) {
-      setError(error.message || "Error")
-    } finally {
-      setLoading(false)
-    }
-  }
+  setLoading(true);
+     try {
+       await fetch(`${API_URL}`)
+         .then(res => res.json())
+         .then(data => {
+           setMovies(data)
+         })
+     } catch (error) {
+       setError(error.message || "Error")
+     } finally {
+       setLoading(false)
+     }
+   }
 
   return (
     <View style={[styles.container]}>
