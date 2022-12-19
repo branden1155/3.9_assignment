@@ -1,42 +1,46 @@
-import React, {useState} from'react';
+import React, {useState, useEffect} from'react';
 import { StatusBar } from 'expo-status-bar';
 import { Switch, Text, Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import styles from './appStyles'
+import AuthService from './services/auth.service';
+
 
 import Movie from './Movie/Movie';
 import Form from './Form/Form';
 import MovieList from './MovieList/MovieList';
+import Home from './Home/Home';
+import Login from './Login/Login';
+import Signup from './Signup/Signup';
 
-function HomeScreen({navigation}){
 
-  return (
-    <View style={[styles.containers]}>
-      <View style={[styles.pageTitle]}>
-        <Text h1 style={[styles.text, {color:"#ffffff"}]}>Your Movie List</Text>
-      </View>
-      <View style={[styles.buttonContainer]}>
-        <View style={[styles.navButtons]}>
-          <Button color="#e76f51" title='Go To Movie List' onPress={() => navigation.navigate('MovieList')} />
-        </View>
-        <View style={[styles.navButtons]}>
-          <Button color="#e76f51" title='Go To Form' onPress={() => navigation.navigate('Form')} />
-        </View>
-      </View>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
 export default function App() {
   const Stack = createNativeStackNavigator();
+
+  const [currentUser, setCurrentUser] = useState(false);
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, [])
+
+  const logOut = () => {
+    AuthService.logout();
+  }
   
 
   return (
     <NavigationContainer>
+      <View>
+
+      </View>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="MovieList" component={MovieList} />
         <Stack.Screen name="Form" component={Form} />
         <Stack.Screen name="Movie" component={Movie} />
